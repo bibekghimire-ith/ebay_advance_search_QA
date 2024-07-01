@@ -1,0 +1,544 @@
+{
+	"info": {
+		"_postman_id": "565c3182-51df-4de0-8346-a13fd1378e34",
+		"name": "SwaggerPetstore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18447672"
+	},
+	"item": [
+		{
+			"name": "End-to-end-Tests",
+			"item": [
+				{
+					"name": "Add a new pet to the store",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Validate status code\r",
+									"pm.test(\"Status is 200\", function () {\r",
+									"    // pm.expect(pm.response.code).to.equal(200);\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Validate response time\r",
+									"pm.test(\"Response time is less than 2s\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"// Validate Response body\r",
+									"pm.test(\"Response body contains the correct pet details\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.eql(pm.collectionVariables.get(\"id\"), \"Id mismatch\");\r",
+									"    pm.expect(jsonData.category.id).to.eql(pm.collectionVariables.get(\"cat_id\"), \"Category id is different\");\r",
+									"    pm.expect(jsonData.category.name).to.eql(pm.collectionVariables.get(\"category\"), \"Category is different\");\r",
+									"    pm.expect(jsonData.name).to.eql(pm.collectionVariables.get(\"dog_name\"), \"Dog name is different\");\r",
+									"    pm.expect(jsonData.tags[0].name).to.eql(pm.collectionVariables.get(\"tag_name\"), \"Tag is different\");\r",
+									"    pm.expect(jsonData.status).to.eql(pm.collectionVariables.get(\"status\"), \"Dog status is different\");\r",
+									"});\r",
+									"\r",
+									"// Validate response schema\r",
+									"var schema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"id\": {\"type\": \"integer\"},\r",
+									"        \"category\": {\r",
+									"            \"type\": \"object\"\r",
+									"        },\r",
+									"        \"name\": {\"type\": \"string\"},\r",
+									"        \"photoUrls\": {\r",
+									"            \"type\": \"array\",\r",
+									"        },\r",
+									"        \"tags\": {\r",
+									"            \"type\": \"array\",\r",
+									"            \"items\": {\r",
+									"                \"type\": \"object\",\r",
+									"                \"properties\": {\r",
+									"                    \"name\": {\"type\": \"string\"},\r",
+									"                    \"id\": {\"type\": \"integer\"}\r",
+									"                }\r",
+									"            }\r",
+									"        },\r",
+									"        \"status\": {\"type\": \"string\"}\r",
+									"    },\r",
+									"    \"required\": [\"id\", \"category\", \"name\", \"tags\", \"status\"]\r",
+									"};\r",
+									"\r",
+									"pm.test(\"Response Schema validation\", function(){\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"id\", 1001);\r",
+									"pm.collectionVariables.set(\"category\", \"bulldog\");\r",
+									"pm.collectionVariables.set(\"cat_id\", 101);\r",
+									"\r",
+									"pm.collectionVariables.set(\"dog_name\", \"Rocky\");\r",
+									"pm.collectionVariables.set(\"tag_id\", 101);\r",
+									"pm.collectionVariables.set(\"tag_name\", \"hound\");\r",
+									"pm.collectionVariables.set(\"status\", \"others\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": {{id}},\r\n  \"category\": {\r\n    \"id\": {{cat_id}},\r\n    \"name\": \"{{category}}\"\r\n  },\r\n  \"name\": \"{{dog_name}}\",\r\n  \"photoUrls\": [\r\n    \"\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": {{tag_id}},\r\n      \"name\": \"{{tag_name}}\"\r\n    }\r\n  ],\r\n  \"status\": \"{{status}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/pet",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update the pet details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Validate status code\r",
+									"pm.test(\"Status is 200\", function () {\r",
+									"    // pm.expect(pm.response.code).to.equal(200);\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Validate response time\r",
+									"pm.test(\"Response time is less than 2s\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"// Validate update of the status of the dog\r",
+									"pm.test(\"Response body contains the correct pet details\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.status).to.eql(pm.collectionVariables.get(\"updated_status\"), \"Dog status is different\");\r",
+									"});\r",
+									"\r",
+									"// Validate response schema\r",
+									"var schema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"id\": {\"type\": \"integer\"},\r",
+									"        \"category\": {\r",
+									"            \"type\": \"object\"\r",
+									"        },\r",
+									"        \"name\": {\"type\": \"string\"},\r",
+									"        \"photoUrls\": {\r",
+									"            \"type\": \"array\",\r",
+									"        },\r",
+									"        \"tags\": {\r",
+									"            \"type\": \"array\",\r",
+									"            \"items\": {\r",
+									"                \"type\": \"object\",\r",
+									"                \"properties\": {\r",
+									"                    \"name\": {\"type\": \"string\"},\r",
+									"                    \"id\": {\"type\": \"integer\"}\r",
+									"                }\r",
+									"            }\r",
+									"        },\r",
+									"        \"status\": {\"type\": \"string\"}\r",
+									"    },\r",
+									"    \"required\": [\"id\", \"category\", \"name\", \"tags\", \"status\"]\r",
+									"};\r",
+									"\r",
+									"pm.test(\"Response Schema validation\", function(){\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// pm.collectionVariables.set(\"id\", 1001);\r",
+									"// pm.collectionVariables.set(\"cat_name\", \"bulldog\");\r",
+									"// pm.collectionVariables.set(\"cat_id\", 101);\r",
+									"\r",
+									"// pm.collectionVariables.set(\"dog_name\", \"Rocky\");\r",
+									"// pm.collectionVariables.set(\"tag_id\", 101);\r",
+									"// pm.collectionVariables.set(\"tag_name\", \"hound\");\r",
+									"pm.collectionVariables.set(\"updated_status\", \"status_levelled_up\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": {{id}},\r\n  \"category\": {\r\n    \"id\": {{cat_id}},\r\n    \"name\": \"{{category}}\"\r\n  },\r\n  \"name\": \"{{dog_name}}\",\r\n  \"photoUrls\": [\r\n    \"\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": {{tag_id}},\r\n      \"name\": \"{{tag_name}}\"\r\n    }\r\n  ],\r\n  \"status\": \"{{updated_status}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/pet",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find pet by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Validate status code\r",
+									"pm.test(\"Status is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Validate response time\r",
+									"pm.test(\"Response time is less than 2s\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									"\r",
+									"// Validate Response\r",
+									"pm.test(\"Response body contains the correct pet details\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.eql(pm.collectionVariables.get(\"id\"), \"Id mismatch\");\r",
+									"    pm.expect(jsonData.category.id).to.eql(pm.collectionVariables.get(\"cat_id\"), \"Category id is different\");\r",
+									"    pm.expect(jsonData.category.name).to.eql(pm.collectionVariables.get(\"category\"), \"Category is different\");\r",
+									"    pm.expect(jsonData.name).to.eql(pm.collectionVariables.get(\"dog_name\"), \"Dog name is different\");\r",
+									"    pm.expect(jsonData.tags[0].name).to.eql(pm.collectionVariables.get(\"tag_name\"), \"Tag is different\");\r",
+									"    pm.expect(jsonData.status).to.eql(pm.collectionVariables.get(\"updated_status\"), \"Dog status is different\");\r",
+									"});\r",
+									"\r",
+									"// Validate response schema\r",
+									"var schema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"id\": {\"type\": \"integer\"},\r",
+									"        \"category\": {\r",
+									"            \"type\": \"object\"\r",
+									"        },\r",
+									"        \"name\": {\"type\": \"string\"},\r",
+									"        \"photoUrls\": {\r",
+									"            \"type\": \"array\",\r",
+									"        },\r",
+									"        \"tags\": {\r",
+									"            \"type\": \"array\",\r",
+									"            \"items\": {\r",
+									"                \"type\": \"object\",\r",
+									"                \"properties\": {\r",
+									"                    \"name\": {\"type\": \"string\"},\r",
+									"                    \"id\": {\"type\": \"integer\"}\r",
+									"                }\r",
+									"            }\r",
+									"        },\r",
+									"        \"status\": {\"type\": \"string\"}\r",
+									"    },\r",
+									"    \"required\": [\"id\", \"category\", \"name\", \"tags\", \"status\"]\r",
+									"};\r",
+									"\r",
+									"pm.test(\"Response Schema validation\", function(){\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "api_key",
+								"value": "special-key",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/pet/{{id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pet",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Pets by Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Validate status code\r",
+									"pm.test(\"Status is 200\", function () {\r",
+									"    // pm.expect(pm.response.code).to.equal(200);\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Validate response time\r",
+									"pm.test(\"Response time is less than 2s\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									"\r",
+									"// Validate that all pets obtained have correct status \r",
+									"var status = \"pending\";\r",
+									"\r",
+									"pm.test(\"Verify status of all pets obtained\", function () {\r",
+									"     pm.expect(pm.response.json()).to.be.an('array');\r",
+									"     pm.response.json().forEach((pet) => {\r",
+									"            pm.expect(pet).to.have.property('status');\r",
+									"            pm.expect(pet.status).to.eql(status);\r",
+									"     });\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/pet/findByStatus?status=pending",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pet",
+								"findByStatus"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "pending"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DDT_Tests",
+			"item": [
+				{
+					"name": "Add a new pet to the store",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"test_status = pm.variables.get(\"test_status\");\r",
+									"description = pm.variables.get(\"description\");\r",
+									"\r",
+									"\r",
+									"if(test_status == \"pass\") {\r",
+									"    // Validate status code\r",
+									"    pm.test(\"Status is 200\", function () {\r",
+									"        // pm.expect(pm.response.code).to.equal(200);\r",
+									"        pm.response.to.have.status(200);\r",
+									"    });\r",
+									"\r",
+									"    // Validate response time\r",
+									"    pm.test(\"Response time is less than 2s\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"    });\r",
+									"\r",
+									"    // Validate Response body\r",
+									"    pm.test(\"Response body Validation: \" + description, function() {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        // pm.expect(jsonData.id).to.eql(pm.variables.get(\"id\"), \"Id mismatch\");\r",
+									"        pm.expect(jsonData.category.id).to.eql(pm.variables.get(\"cat_id\"), \"Category id is different\");\r",
+									"        pm.expect(jsonData.category.name).to.eql(pm.variables.get(\"category\"), \"Category is different\");\r",
+									"        pm.expect(jsonData.name).to.eql(pm.variables.get(\"dog_name\"), \"Dog name is different\");\r",
+									"        pm.expect(jsonData.tags[0].name).to.eql(pm.variables.get(\"tag_name\"), \"Tag is different\");\r",
+									"        pm.expect(jsonData.status).to.eql(pm.variables.get(\"status\"), \"Dog status is different\");\r",
+									"    });\r",
+									"}\r",
+									"else {\r",
+									"    // Validate status code\r",
+									"    pm.test(\"Status is not 200: \" + description, function () {\r",
+									"        pm.expect(pm.response.code).to.not.eql(200);\r",
+									"    });\r",
+									"\r",
+									"    // Validate response time\r",
+									"    pm.test(\"Response time is less than 2s\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"    });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// pm.collectionVariables.set(\"id\", 1001);\r",
+									"// pm.collectionVariables.set(\"cat_name\", \"bulldog\");\r",
+									"// pm.collectionVariables.set(\"cat_id\", 101);\r",
+									"\r",
+									"// pm.collectionVariables.set(\"dog_name\", \"Rocky\");\r",
+									"// pm.collectionVariables.set(\"tag_id\", 101);\r",
+									"// pm.collectionVariables.set(\"tag_name\", \"hound\");\r",
+									"// pm.collectionVariables.set(\"status\", \"others\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": {{id}},\r\n  \"category\": {\r\n    \"id\": {{cat_id}},\r\n    \"name\": \"{{category}}\"\r\n  },\r\n  \"name\": \"{{dog_name}}\",\r\n  \"photoUrls\": [\r\n    \"\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": {{tag_id}},\r\n      \"name\": \"{{tag_name}}\"\r\n    }\r\n  ],\r\n  \"status\": \"{{status}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/pet",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pet"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "cat_name",
+			"value": ""
+		},
+		{
+			"key": "id",
+			"value": ""
+		},
+		{
+			"key": "cat_id",
+			"value": ""
+		},
+		{
+			"key": "dog_name",
+			"value": ""
+		},
+		{
+			"key": "tag_id",
+			"value": ""
+		},
+		{
+			"key": "tag_name",
+			"value": ""
+		},
+		{
+			"key": "status",
+			"value": ""
+		},
+		{
+			"key": "updated_status",
+			"value": ""
+		},
+		{
+			"key": "category",
+			"value": ""
+		}
+	]
+}
